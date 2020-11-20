@@ -78,7 +78,7 @@ const LocationTerm = ({navigation}: Props) => {
           />
         </CheckBoxTouchAble>
         <Button
-          onPressed={() => navigation.navigate('Main')}
+          onPressed={() => navigation.navigate('LocationInput')}
           checked={checked && checked2}
           title={'동의합니다.'}
         />

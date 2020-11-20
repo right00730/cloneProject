@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import Styled from 'styled-components/native';
-import {RouteProp} from '@react-navigation/native';
+import {NavigationProp, RouteProp} from '@react-navigation/native';
 import {TextInput} from '~/Components/Component/SearchButton';
 
 import ListItem from './ListItem';
@@ -63,13 +63,14 @@ margin:0px ;
 const RoadAddr = Styled(MainAddr)`
 font-size: 20px;
 `;
-type LocationNavigation = RouteProp<NavigationParamList, 'LocationDetail'>;
-
+type LocationRoute = RouteProp<NavigationParamList, 'LocationDetail'>;
+type LocationNavigation = NavigationProp<NavigationParamList, 'LocationDetail'>;
 interface Props {
-  route: LocationNavigation;
+  route: LocationRoute;
+  navigation: LocationNavigation;
 }
 
-const LocationDetail = ({route}: Props) => {
+const LocationDetail = ({route, navigation}: Props) => {
   const road = route.params.roadAddr;
   const {setAddr, addrInfo} = useContext(LocationContext);
 
@@ -92,8 +93,8 @@ const LocationDetail = ({route}: Props) => {
           <ButtonContainer
             style={{backgroundColor: 'rgb(41, 194, 189)'}}
             onPress={() => {
-              setAddr('논현역');
-              console.log(addrInfo);
+              setAddr(road);
+              navigation.navigate('Main');
             }}>
             <Label>완료</Label>
           </ButtonContainer>

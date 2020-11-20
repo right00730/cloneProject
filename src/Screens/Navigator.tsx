@@ -15,6 +15,7 @@ import None from '~/Screens/None';
 import {baeminColor} from '~/Components/Styles/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Text} from 'react-native';
+
 const Stack = createStackNavigator();
 const BottomT = createBottomTabNavigator();
 const Top = createMaterialTopTabNavigator();
@@ -143,7 +144,7 @@ const HederIcon = (kind: any) => {
     />
   );
 };
-export default () => {
+const Navi = () => {
   const {addrInfo} = useContext(LocationContext);
 
   return (
@@ -175,7 +176,7 @@ export default () => {
             ),
             headerTitle: () => (
               <Text style={{fontSize: 20, textAlign: 'center'}}>
-                주소 출력 예정
+                {addrInfo}
               </Text>
             ),
           }}
@@ -188,4 +189,9 @@ export default () => {
       </Stack.Navigator>
     </NavigationContainer>
   );
+};
+export default () => {
+  const {addrInfo} = useContext(LocationContext);
+  console.log('>1>>>', addrInfo);
+  return <Navi></Navi>;
 };

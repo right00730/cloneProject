@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {Dimensions} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Styled from 'styled-components/native';
@@ -28,7 +28,6 @@ padding : 20px ;
 const Main = () => {
   useEffect(() => {
     SplashScreen.hide();
-    console.log('ttt');
   }, []);
   const list = [];
   for (let i = 0; i < 10; i++) {
