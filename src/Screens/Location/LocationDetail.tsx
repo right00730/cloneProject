@@ -94,7 +94,6 @@ const LocationDetail = ({route, navigation}: Props) => {
             style={{backgroundColor: 'rgb(41, 194, 189)'}}
             onPress={() => {
               setAddr(road);
-              navigation.navigate('Main');
             }}>
             <Label>완료</Label>
           </ButtonContainer>

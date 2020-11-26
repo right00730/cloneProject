@@ -12,16 +12,9 @@ interface Props {
 
 const LocationContext = createContext<ILocationContext>(defaultContext);
 const LocationContextProvider = ({children}: Props) => {
-  console.log('run1111');
-
   const [addrInfo, setAddrInfo] = useState<undefined | string>();
   const [isLoading, setIsLoading] = useState<boolean | undefined>();
-  useEffect(() => {
-    getAddr();
-  }, []);
-
   const getAddr = (): void => {
-    console.log('run222222');
     AsyncStorage.getItem('token2')
       .then((value) => {
         if (value) {
@@ -43,6 +36,9 @@ const LocationContextProvider = ({children}: Props) => {
     setIsLoading(true);
   };
 
+  useEffect(() => {
+    getAddr();
+  }, []);
   return (
     <LocationContext.Provider
       value={{

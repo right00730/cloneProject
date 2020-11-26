@@ -5,6 +5,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {UserContext, LocationContext} from '~/Context/';
 import Main from '~/Screens/Main';
+import FadeInView from '~/Screens/Main/FadeInView';
 import {
   LocationDetail,
   LocationInput,
@@ -55,7 +56,7 @@ const TopTab = () => {
       />
       <Top.Screen
         name="takeOut"
-        component={None}
+        component={FadeInView}
         options={{tabBarLabel: '포장/방문'}}
       />
     </Top.Navigator>
@@ -144,54 +145,47 @@ const HederIcon = (kind: any) => {
     />
   );
 };
-const Navi = () => {
-  const {addrInfo} = useContext(LocationContext);
 
+const Mains = () => {
+  const {addrInfo} = useContext(LocationContext);
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={addrInfo ? 'Main' : 'Location'}
-        screenOptions={{}}>
-        <Stack.Screen
-          name="Main"
-          component={Bottom}
-          options={{
-            headerLeft: () => (
-              <Icon
-                name="md-alert-circle-outline"
-                size={30}
-                style={{
-                  padding: 10,
-                }}
-              />
-            ),
-            headerRight: () => (
-              <Icon
-                name="md-qr-code-outline"
-                size={30}
-                style={{
-                  padding: 10,
-                }}
-              />
-            ),
-            headerTitle: () => (
-              <Text style={{fontSize: 20, textAlign: 'center'}}>
-                {addrInfo}
-              </Text>
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="Location"
-          component={Location}
-          options={{header: None}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Main"
+        component={Bottom}
+        options={{
+          headerLeft: () => (
+            <Icon
+              name="md-alert-circle-outline"
+              size={30}
+              style={{
+                padding: 10,
+              }}
+            />
+          ),
+          headerRight: () => (
+            <Icon
+              name="md-qr-code-outline"
+              size={30}
+              style={{
+                padding: 10,
+              }}
+            />
+          ),
+          headerTitle: () => (
+            <Text style={{fontSize: 20, textAlign: 'center'}}>{addrInfo}</Text>
+          ),
+        }}
+      />
+    </Stack.Navigator>
   );
 };
 export default () => {
   const {addrInfo} = useContext(LocationContext);
-  console.log('>1>>>', addrInfo);
-  return <Navi></Navi>;
+
+  return (
+    <NavigationContainer>
+      {addrInfo ? <Mains /> : <Location />}
+    </NavigationContainer>
+  );
 };

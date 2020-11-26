@@ -17,7 +17,7 @@ interface IUserContext {
 interface ILocationContext {
   isLoading: boolean | undefined;
 
-  getAddr: () => void;
+  getAddr: () => any;
   setAddr: (addr: string) => void;
   addrInfo: string | undefined;
 }
