@@ -56,7 +56,7 @@ const TopTab = () => {
       />
       <Top.Screen
         name="takeOut"
-        component={FadeInView}
+        component={Main}
         options={{tabBarLabel: '포장/방문'}}
       />
     </Top.Navigator>
