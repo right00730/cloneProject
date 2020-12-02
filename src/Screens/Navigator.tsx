@@ -21,6 +21,7 @@ import {Text} from 'react-native';
 import {LoginNavi, MYPAGE} from './Login';
 import Mypage from './Login/mypage';
 import IsLoading from './isLoading';
+import {Header} from 'react-native/Libraries/NewAppScreen';
 const Stack = createStackNavigator();
 const BottomT = createBottomTabNavigator();
 const Top = createMaterialTopTabNavigator();
@@ -196,9 +197,27 @@ const MainStack = () => {
           headerTitle: () => <TitleAddr />,
         }}
       />
-      <Stack.Screen name="LocationInput" component={LocationInput} />
-      <Stack.Screen name="LocationList" component={LocationList} />
-      <Stack.Screen name="LocationDetail" component={LocationDetail} />
+      <Stack.Screen
+        name="LocationInput"
+        component={LocationInput}
+        options={{
+          headerTitle: () => <Text style={{fontSize: 20}}>주소 변경하기</Text>,
+        }}
+      />
+      <Stack.Screen
+        name="LocationList"
+        component={LocationList}
+        options={{
+          headerTitle: () => <Text style={{fontSize: 20}}>주소 변경하기</Text>,
+        }}
+      />
+      <Stack.Screen
+        name="LocationDetail"
+        component={LocationDetail}
+        options={{
+          headerTitle: () => <Text style={{fontSize: 20}}>주소 변경하기</Text>,
+        }}
+      />
       <Stack.Screen
         name="StoreList"
         component={StoreList}

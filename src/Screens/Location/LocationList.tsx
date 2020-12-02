@@ -9,6 +9,7 @@ import IsLoading from '../isLoading';
 const Container = Styled.SafeAreaView`
 padding: 10px 10px;
 flex:1;
+background-color:white;
 `;
 const FailContainer = Styled.View`
 padding: 10px 10px;
