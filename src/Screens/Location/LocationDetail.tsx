@@ -1,8 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
 import Styled from 'styled-components/native';
-import {NavigationProp, RouteProp} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  NavigationProp,
+  RouteProp,
+} from '@react-navigation/native';
 import ListItem from './ListItem';
-import {TextInput} from 'react-native';
+import {Alert, TextInput} from 'react-native';
 import {LocationContext} from '~/Context';
 import NaverMapView, {
   Circle,
@@ -21,18 +25,16 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-
-import Geolocation from 'react-native-geolocation-service';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 const Container = Styled.View`
-
 height: 70%;
 flex:1;
 
 `;
 const TextContainer = Styled.View`
-background-color: white;
-height: 220px;
+background-color: rgba(255,255,255,0.9);
+height: 200px;
 width: 100%;
 flex-direction : column;
 
@@ -46,7 +48,7 @@ background-color: rgb(41, 194, 189);
 align-items : center;
 height: 50px;
 border-radius : 5px;
-width: 98%;
+width: 95%;
 `;
 
 const MainAddr = Styled.View`
@@ -56,14 +58,14 @@ height: 40%;
 `;
 const TextInputContainer = Styled.View`
 height: 25%;
-margin:5px ;
+margin:7px ;
 align-self : center;
 width: 100%;
 align-items:center;
 
 `;
 const Label = Styled.Text`
-font-size: 20px
+font-size: 25px
 color : white;
 text-align:center;
 font-weight:bold;
@@ -74,51 +76,69 @@ const TextInputContainer2 = Styled(TextInputContainer)`
 margin:0px ;
 
 `;
+const InputSubAddr = Styled.TextInput`
+border : solid 1px lightgray
+width:90%;
+font-size: 20px;
+margin-top:-10px
+`;
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
-
 type LocationRoute = RouteProp<NavigationParamList, 'LocationDetail'>;
-type LocationNavigation = NavigationProp<NavigationParamList, 'LocationDetail'>;
+type LocationNavigation = StackNavigationProp<NavigationParamList>;
+
 interface Props {
   route: LocationRoute;
   navigation: LocationNavigation;
 }
-interface addrProps {
-  mainaddr: string;
-  building: string;
-  subaddr: string;
-}
+
 const markerSize = 35;
-
+interface addrProps {
+  jibunAddress: string;
+  roadAddress: string;
+  subAddress: string;
+}
+let temp_data = {jibunAddress: '', roadAddress: ''};
 const LocationDetail = ({route, navigation}: Props) => {
-  const [addr, setAddrs] = useState<addrProps>({
-    mainaddr: '호출실패',
-    building: '호출실패',
-    subaddr: '',
+  const {setAddr, addrInfo, coords} = useContext(LocationContext);
+  const [addrbyXY, setAddrbyXY] = useState<addrProps>({
+    jibunAddress: '',
+    roadAddress: '',
+    subAddress: '',
   });
-  //좌표  state
-  const [location, setLocation] = useState({latitude: null, longitude: null});
+  const [coord, setCoord] = useState({
+    longitude: parseFloat(route.params.lon),
+    latitude: parseFloat(route.params.lat),
+  });
+  //카메라 변화있을때 실행
+  async function changed(e: any) {
+    setCoord({latitude: e.latitude, longitude: e.longitude});
+    await getAddrbyXY(e.longitude, e.latitude);
+    console.log({...temp_data});
+    setAddrbyXY({
+      ...addrbyXY,
+      jibunAddress: temp_data.jibunAddress,
+      roadAddress: temp_data.roadAddress,
+    });
+  }
 
-  const {setAddr, addrInfo} = useContext(LocationContext);
-
-  const changed = (e: any) => {
-    console.log(e);
-    setLocation({longitude: e.longitude, latitude: e.latitude});
-    LocationWithXY(e.longitude, e.latitude, addr, setAddrs);
-  };
+  //마커 움직였을 때 실행
   const [move, setMove] = useState({
     MoveTop: windowHeight / 2 - 30,
     MoveOpacity: 1,
   });
+  //상세주소 입력할 때 실행
   const onAddrInput = (text: any) => {
-    console.log('textInput>>>>>>>>', text);
-    setAddrs({...addr, subaddr: text});
+    setAddrbyXY({...addrbyXY, subAddress: text});
   };
   return (
     <Container>
       <View style={{flex: 1}}>
         <NaverMapView
           style={{height: windowHeight}}
-          center={{longitude: 127.036204916255, latitude: 37.6619215478977}}
+          center={{
+            longitude: parseFloat(route.params.lon),
+            latitude: parseFloat(route.params.lat),
+          }}
           onTouch={() => {
             setMove({MoveTop: windowHeight / 2 - 35, MoveOpacity: 0.7});
           }}
@@ -140,14 +160,14 @@ const LocationDetail = ({route, navigation}: Props) => {
           <ListItem
             borderN="none"
             addr={{
-              bdNm: addr.building,
-              jibunAddr: addr.mainaddr,
+              building: addrbyXY.jibunAddress,
+              roadAddr: addrbyXY.roadAddress,
             }}
           />
         </MainAddr>
 
         <TextInputContainer>
-          <TextInput
+          <InputSubAddr
             onChangeText={(text) => {
               onAddrInput(text);
             }}
@@ -158,7 +178,20 @@ const LocationDetail = ({route, navigation}: Props) => {
           <ButtonContainer
             style={{backgroundColor: 'rgb(41, 194, 189)'}}
             onPress={() => {
-              setAddr(addr.building + addr.subaddr);
+              !addrInfo
+                ? addrbyXY.roadAddress
+                  ? setAddr(
+                      `${addrbyXY.roadAddress} ${addrbyXY.jibunAddress} ${addrbyXY.subAddress}`,
+                    )
+                  : setAddr(`${addrbyXY.jibunAddress} ${addrbyXY.subAddress}`)
+                : (addrbyXY.roadAddress
+                    ? setAddr(
+                        `${addrbyXY.roadAddress} ${addrbyXY.jibunAddress} ${addrbyXY.subAddress}`,
+                      )
+                    : setAddr(
+                        `${addrbyXY.jibunAddress} ${addrbyXY.subAddress}`,
+                      ),
+                  navigation.popToTop());
             }}>
             <Label>완료</Label>
           </ButtonContainer>
@@ -175,10 +208,12 @@ const style = StyleSheet.create({
     right: windowWidth / 2 - markerSize / 2,
   },
 });
+const getAddrbyXY = async (x: number, y: number) => {
+  console.log('x : ', x);
+  console.log('y : ', y);
 
-const LocationWithXY = (x: number, y: number, state: any, set: any) => {
   const url = `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${x},${y}&sourcecrs=epsg:4326&orders=roadaddr,addr&output=json`;
-  axios
+  await axios
     .get(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -188,20 +223,30 @@ const LocationWithXY = (x: number, y: number, state: any, set: any) => {
     })
     .then((response) => response.data)
     .then((data) => {
-      set(
-        data.results[0].land.name
-          ? {
-              mainaddr: `${data.results[0].land.name} ${data.results[0].land.number1}`,
-              building: data.results[0].land.addition0.value
-                ? `${data.results[0].land.addition0.value} `
-                : `${data.results[0].region.area3.name} ${data.results[1].land.number1}`,
-            }
-          : {mainaddr: '주소를 찾을 수 없습니다.', building: '다시 검색하세요'},
-      );
-    })
-
-    .catch((error) =>
-      set({mainaddr: '주소를 찾을 수 없습니다.', building: '다시 검색하세요'}),
-    );
-  return state;
+      console.log('resultData>>>>>>>>>>>>>>>>', data.results[0]);
+      let temp = {};
+      if (data.results[0].land.name && data.results[0].land.name !== 'addr') {
+        temp = {
+          roadAddress: `${data.results[0].land.name} ${data.results[0].land.number1}`,
+          jibunAddress: data.results[0].land.addition0.value
+            ? data.results[0].land.addition0.value
+            : `${data.results[0].region.area2.name}${data.results[0].region.area3.name}`,
+        };
+      } else if (data.results[0].region.area1) {
+        temp = {
+          jibunAddress:
+            ` ${data.results[0].region.area2.name} ${data.results[0].region.area3.name}` +
+            `${data.results[0].land.number1} ${data.results[0].land.number2}`,
+        };
+      } else if (data.results[0].land.addition0.value) {
+        temp = {jibunAddress: data.results[0].land.addition0.value};
+      } else {
+        temp = {roadAddress: '주소를 찾을 수 없습니다.', jibunAddress: ''};
+      }
+      tempFunc(temp);
+    });
+};
+const tempFunc = (data: any) => {
+  temp_data = data;
+  return data;
 };

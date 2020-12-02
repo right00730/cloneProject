@@ -1,12 +1,15 @@
 import React, {useState, createContext, useEffect} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
+import {Alert} from 'react-native';
 
 const defaultContext: IUserContext = {
   isLoading: false,
-  userInfo: undefined,
+  userInfo: {email: '', nickName: ''},
   getUserInfo: () => {},
   login: () => {},
   logout: () => {},
+  setIsLoading: undefined,
 };
 
 interface Props {
@@ -15,42 +18,67 @@ interface Props {
 const UserContext = createContext<IUserContext>(defaultContext);
 
 const UserContextProvider = ({children}: Props) => {
-  const [addrInfo, setAddress] = useState<string>();
-  const getAddr = () => {
-    AsyncStorage.getItem('address').then((value) => {
-      if (value) {
-        setAddress(value);
-      }
-      setIsLoading(true);
-    });
-  };
-
   const [userInfo, setUserInfo] = useState<IUserInfo>({
     email: undefined,
     nickName: undefined,
-    addr: undefined,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const login = (email: string, password: string) => {
-    AsyncStorage.setItem('token', email).then(() => {
-      setUserInfo({
-        email: email,
+  const login = async (emaild: string, passwordd: string) => {
+    const url = 'http://192.168.0.37:8080/api/member/login';
+    await axios
+      .post(url, {
+        email: emaild,
+        password: passwordd,
+      })
+      .then((json) => json.data)
+      .then((data) => {
+        AsyncStorage.setItem(
+          'loginToken',
+          JSON.stringify({
+            token: data.tokens.accessToken,
+            email: data.email,
+            nickName: data.name,
+          }),
+        ).then(() => {
+          setUserInfo({
+            email: data.email,
+            nickName: data.name,
+          });
+          console.log('here context >>>', data.email);
+          console.log(data.name);
+
+          setIsLoading(false);
+        });
+      })
+      .catch((error) => {
+        console.log('fail!!! >>', error);
+        Alert.alert('로그인 실패');
+
+        setIsLoading(false);
       });
-      setIsLoading(true);
-    });
   };
   const getUserInfo = () => {
-    AsyncStorage.getItem('token').then((value) => {
-      if (value) {
-        setUserInfo({
-          email: '',
-        });
-      }
-      setIsLoading(true);
-    });
+    AsyncStorage.getItem('loginToken')
+      .then((data) => {
+        console.log('getUserInfo>>>>>>>>>>', data);
+        let Info = data ? JSON.parse(data) : undefined;
+        if (data && Info.token) {
+          setUserInfo({
+            email: Info.email,
+            nickName: Info.nickName,
+          });
+        }
+        setIsLoading(false);
+      })
+      .catch(() => console.log('data none'));
   };
   const logout = () => {
-    AsyncStorage.removeItem('token');
+    AsyncStorage.removeItem('loginToken')
+      .then(() => setUserInfo({email: '', nickName: ''}))
+      .catch((error) => {
+        console.log('logout fail');
+        setUserInfo({email: '', nickName: ''});
+      });
   };
   useEffect(() => {
     getUserInfo();
@@ -59,6 +87,7 @@ const UserContextProvider = ({children}: Props) => {
     <UserContext.Provider
       value={{
         isLoading,
+        setIsLoading,
         userInfo,
         login,
         logout,

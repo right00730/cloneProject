@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Dimensions, View} from 'react-native';
 import Styled from 'styled-components/native';
@@ -13,6 +14,8 @@ align-items: center;
 `;
 const FoodIcon = Styled.Image`
   height: ${windowHeight / 16}px
+  height: ${windowWidth / 9}px
+
   resize-mode: contain;
 `;
 const IconText = Styled.Text`
@@ -21,9 +24,10 @@ font-family : BMHANNAPro
 color: black
 `;
 const MenuIcons = ({data}: any) => {
+  const Navi = useNavigation();
   return (
     <MenuContainer>
-      <MenuIcon>
+      <MenuIcon onPress={() => Navi.navigate('StoreList')}>
         <FoodIcon source={data.uri} />
         <IconText>{data.name}</IconText>
       </MenuIcon>

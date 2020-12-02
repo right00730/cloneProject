@@ -1,5 +1,6 @@
 import React from 'react';
 import Styled from 'styled-components/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const MessageInput = Styled.TextInput`
 font-size : 18px;
@@ -15,9 +16,6 @@ padding: 10px 0px;
 border : solid 1px lightgray;
  justify-content: center ;
 align-items: center;
-`;
-const Icon = Styled.Image`
- width: 60%;
 `;
 
 interface Props {
@@ -39,7 +37,7 @@ const TextInput = ({value, onchange, placeholderMsg}: Propse) => {
 const SearchButton = ({onPress}: Props) => {
   return (
     <Button onPress={onPress}>
-      <Icon source={require('~/Assets/Images/search.png')} />
+      <Icon name="md-search-sharp" size={30} />
     </Button>
   );
 };
@@ -76,4 +74,12 @@ border : solid 1px lightgray;
 const RoadName = () => {
   return <RoadText> 도로명 </RoadText>;
 };
-export {TextInput, SearchButton, WidthSize, HeightSize, RoadName};
+export {
+  TextInput,
+  SearchButton,
+  WidthSize,
+  HeightSize,
+  RoadName,
+  width,
+  height,
+};

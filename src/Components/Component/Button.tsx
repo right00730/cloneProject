@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
+import {ScaledSize} from 'react-native';
 import Styled from 'styled-components/native';
+import {WidthSize} from './SearchButton';
 
 const Container = Styled.View`
 flex:1;
@@ -21,6 +23,7 @@ interface Props {
   title: string;
   checked: boolean;
   onPressed?: () => void;
+  wsize?: number;
 }
 const Label = Styled.Text`
 font-size: 20px
@@ -29,11 +32,14 @@ text-align:center;
 font-weight:bold;
 
 `;
-const Button = ({title, checked, onPressed}: Props) => {
+const Button = ({title, checked, onPressed, wsize}: Props) => {
   return (
     <Container>
       <ButtonContainer
-        style={{backgroundColor: checked ? 'rgb(41, 194, 189)' : 'gray'}}
+        style={{
+          backgroundColor: checked ? 'rgb(41, 194, 189)' : 'gray',
+          width: wsize ? wsize : '98%',
+        }}
         disabled={checked ? false : true}
         onPress={onPressed}>
         <Label>{title}</Label>

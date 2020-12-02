@@ -1,7 +1,6 @@
 interface IUserInfo {
   email: string | undefined;
   nickName?: string | undefined;
-  addr?: string | undefined;
 }
 interface ILocation {
   mainAddr: string;
@@ -9,17 +8,20 @@ interface ILocation {
 
 interface IUserContext {
   isLoading: boolean | undefined;
-  userInfo: IUserInfo | undefined;
+  userInfo: IUserInfo;
   getUserInfo: () => void;
   login: (email: string, password: string) => void;
   logout: () => void;
+  setIsLoading: any;
 }
 interface ILocationContext {
   isLoading: boolean | undefined;
-
   getAddr: () => any;
   setAddr: (addr: string) => void;
   addrInfo: string | undefined;
+  coords: Array<number>;
+  setIsLoading: any;
+  setAddrInfo: any;
 }
 
 type NavigationParamList = {
@@ -29,8 +31,14 @@ type NavigationParamList = {
     message: string;
   };
   Main: undefined;
+  Login: undefined;
+  JoinTerm: undefined;
+  JoinConfirm: undefined;
+  JoinDataInput: {phoneNum: string};
+  LinkTopandStack: undefined;
+
   LocationDetail: {
-    mainAddr: string;
-    roadAddr: string;
+    lat: number;
+    lon: number;
   };
 };

@@ -6,6 +6,7 @@ const SliderContainer = Styled.View`
 `;
 
 const Flat = Styled.FlatList`
+margin:0px 0px 20px 0px
 `;
 interface Props {
   data?: any;
@@ -41,6 +42,12 @@ const sliderList = [
   },
   {
     uri: require('~/Assets/Images/slider1.png'),
+  },
+  {
+    uri: require('~/Assets/Images/slider2.png'),
+  },
+  {
+    uri: require('~/Assets/Images/slider3.png'),
   },
 ];
 

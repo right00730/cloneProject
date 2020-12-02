@@ -1,28 +1,30 @@
 import React, {useEffect, useContext} from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, View} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Styled from 'styled-components/native';
 import {Carousel} from './Carousel';
 import {MenuIcons} from './MenuIcons';
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 //github.com/GeekyAnts/NativeBase/issues/2947 >>스크롤뷰 에러 해결하기
-const AddrButton = Styled.ScrollView`
-  width: 100%;
-  height: 100%;
-  `;
-const ListContainer = Styled.View`
+const ListContainer = Styled.ScrollView`
 height: 1000px;
  width: 100%;
-`;
+flex:1;
+
+ `;
 const BackgroundImg = Styled.ImageBackground`
  width: 100%;
-`;
-const FlatLists = Styled.FlatList`
+ flex:1
+ height: 100%;
+
+ `;
+const FlatLists = Styled.View`
 flex-direction :row
 flex-wrap : wrap
-padding : 20px ;
+margin: 0px 18px;
 `;
 const Main = () => {
+  console.log('Main!!!!!!!!!');
   useEffect(() => {
     SplashScreen.hide();
   }, []);
@@ -53,19 +55,16 @@ const Main = () => {
   }
 
   return (
-    <AddrButton>
-      <Carousel height={windowHeight / 4} width={windowWidth} />
-      <ListContainer>
-        <BackgroundImg source={require('~/Assets/Images/mainBackground.png')}>
-          <FlatLists
-            numColumns={4}
-            data={list}
-            keyExtractor={(item, index) => `index_${index}`}
-            renderItem={({item}) => <MenuIcons data={item} />}
-          />
-        </BackgroundImg>
-      </ListContainer>
-    </AddrButton>
+    <ListContainer>
+      <BackgroundImg source={require('~/Assets/Images/mainBackground.png')}>
+        <Carousel height={windowHeight / 4} width={windowWidth} />
+        <FlatLists>
+          {list.map((item, i) => {
+            return <MenuIcons key={i} data={item} />;
+          })}
+        </FlatLists>
+      </BackgroundImg>
+    </ListContainer>
   );
 };
 

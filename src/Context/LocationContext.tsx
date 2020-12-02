@@ -5,6 +5,9 @@ const defaultContext: ILocationContext = {
   getAddr: () => {},
   setAddr: (addr: string) => {},
   addrInfo: undefined,
+  coords: [0, 0],
+  setIsLoading: undefined,
+  setAddrInfo: undefined,
 };
 interface Props {
   children: JSX.Element | Array<JSX.Element>;
@@ -13,27 +16,30 @@ interface Props {
 const LocationContext = createContext<ILocationContext>(defaultContext);
 const LocationContextProvider = ({children}: Props) => {
   const [addrInfo, setAddrInfo] = useState<undefined | string>();
+  const coords = [0, 0];
   const [isLoading, setIsLoading] = useState<boolean | undefined>();
   const getAddr = (): void => {
-    AsyncStorage.getItem('token2')
+    AsyncStorage.getItem('tokenAddr')
       .then((value) => {
+        console.log(value);
         if (value) {
           setAddrInfo(value);
+        } else {
+          setAddrInfo('');
         }
-        setIsLoading(true);
+        setIsLoading(false);
       })
       .catch(() => {
-        setAddrInfo(undefined);
-        setIsLoading(true);
+        setAddrInfo('');
+        setIsLoading(false);
       });
   };
 
   const setAddr = (addr: string): void => {
-    console.log('register');
-    AsyncStorage.setItem('token2', addr).then(() => {
+    AsyncStorage.setItem('tokenAddr', addr).then(() => {
       setAddrInfo(addr);
     });
-    setIsLoading(true);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -43,9 +49,12 @@ const LocationContextProvider = ({children}: Props) => {
     <LocationContext.Provider
       value={{
         getAddr,
+        setIsLoading,
         setAddr,
         addrInfo,
         isLoading,
+        coords,
+        setAddrInfo,
       }}>
       {children}
     </LocationContext.Provider>
