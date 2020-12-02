@@ -6,6 +6,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {UserContext, LocationContext} from '~/Context/';
 import Main from '~/Screens/Main';
 import FadeInView from '~/Screens/Main/FadeInView';
+import {StoreList} from '~/Screens/Main/StoreList';
 
 import {
   LocationDetail,
@@ -198,6 +199,13 @@ const MainStack = () => {
       <Stack.Screen name="LocationInput" component={LocationInput} />
       <Stack.Screen name="LocationList" component={LocationList} />
       <Stack.Screen name="LocationDetail" component={LocationDetail} />
+      <Stack.Screen
+        name="StoreList"
+        component={StoreList}
+        options={{
+          headerTitle: '가게 리스트',
+        }}
+      />
     </Stack.Navigator>
   );
 };

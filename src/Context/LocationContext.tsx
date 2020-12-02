@@ -5,9 +5,10 @@ const defaultContext: ILocationContext = {
   getAddr: () => {},
   setAddr: (addr: string) => {},
   addrInfo: undefined,
-  coords: [0, 0],
+  coords: undefined,
   setIsLoading: undefined,
   setAddrInfo: undefined,
+  setCoords: undefined,
 };
 interface Props {
   children: JSX.Element | Array<JSX.Element>;
@@ -16,14 +17,23 @@ interface Props {
 const LocationContext = createContext<ILocationContext>(defaultContext);
 const LocationContextProvider = ({children}: Props) => {
   const [addrInfo, setAddrInfo] = useState<undefined | string>();
-  const coords = [0, 0];
+  const [coords, setCoords] = useState<undefined | any>({
+    lon: 0,
+    lat: 0,
+  });
   const [isLoading, setIsLoading] = useState<boolean | undefined>();
   const getAddr = (): void => {
+    console.log('context getAddr run');
     AsyncStorage.getItem('tokenAddr')
-      .then((value) => {
-        console.log(value);
-        if (value) {
-          setAddrInfo(value);
+      .then((data) => {
+        console.log('getiTEM>>>>>>>', data);
+        if (data) {
+          let tempdata = JSON.parse(data);
+          setAddrInfo(tempdata.addr);
+          console.log('get addr************', tempdata.addr);
+          console.log('get cord************', tempdata.lon);
+
+          setCoords({lon: tempdata.lon, lat: tempdata.lat});
         } else {
           setAddrInfo('');
         }
@@ -31,13 +41,18 @@ const LocationContextProvider = ({children}: Props) => {
       })
       .catch(() => {
         setAddrInfo('');
+        ``;
         setIsLoading(false);
       });
   };
 
   const setAddr = (addr: string): void => {
-    AsyncStorage.setItem('tokenAddr', addr).then(() => {
-      setAddrInfo(addr);
+    console.log('context setAddr run');
+
+    const setdata = {addr: addr, ...coords};
+    console.log('setdata>>>>>>>', setdata);
+    AsyncStorage.setItem('tokenAddr', JSON.stringify(setdata)).then(() => {
+      setAddrInfo(setdata.addr);
     });
     setIsLoading(false);
   };
@@ -54,6 +69,7 @@ const LocationContextProvider = ({children}: Props) => {
         addrInfo,
         isLoading,
         coords,
+        setCoords,
         setAddrInfo,
       }}>
       {children}

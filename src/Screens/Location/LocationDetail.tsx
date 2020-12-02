@@ -99,7 +99,7 @@ interface addrProps {
 }
 let temp_data = {jibunAddress: '', roadAddress: ''};
 const LocationDetail = ({route, navigation}: Props) => {
-  const {setAddr, addrInfo, coords} = useContext(LocationContext);
+  const {setAddr, addrInfo, coords, setCoords} = useContext(LocationContext);
   const [addrbyXY, setAddrbyXY] = useState<addrProps>({
     jibunAddress: '',
     roadAddress: '',
@@ -111,14 +111,19 @@ const LocationDetail = ({route, navigation}: Props) => {
   });
   //카메라 변화있을때 실행
   async function changed(e: any) {
+    console.log('incoming aaddr>', e.longitude);
     setCoord({latitude: e.latitude, longitude: e.longitude});
-    await getAddrbyXY(e.longitude, e.latitude);
-    console.log({...temp_data});
-    setAddrbyXY({
-      ...addrbyXY,
-      jibunAddress: temp_data.jibunAddress,
-      roadAddress: temp_data.roadAddress,
-    });
+    await getAddrbyXY(e.longitude, e.latitude)
+      .then(() => {
+        setAddrbyXY({
+          ...addrbyXY,
+          jibunAddress: temp_data.jibunAddress,
+          roadAddress: temp_data.roadAddress,
+        });
+      })
+      .then(() => {
+        setCoords({lon: e.longitude, lat: e.latitude});
+      });
   }
 
   //마커 움직였을 때 실행
@@ -209,9 +214,6 @@ const style = StyleSheet.create({
   },
 });
 const getAddrbyXY = async (x: number, y: number) => {
-  console.log('x : ', x);
-  console.log('y : ', y);
-
   const url = `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${x},${y}&sourcecrs=epsg:4326&orders=roadaddr,addr&output=json`;
   await axios
     .get(url, {
@@ -223,7 +225,6 @@ const getAddrbyXY = async (x: number, y: number) => {
     })
     .then((response) => response.data)
     .then((data) => {
-      console.log('resultData>>>>>>>>>>>>>>>>', data.results[0]);
       let temp = {};
       if (data.results[0].land.name && data.results[0].land.name !== 'addr') {
         temp = {

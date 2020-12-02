@@ -1,7 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useContext} from 'react';
 import {Dimensions, View} from 'react-native';
 import Styled from 'styled-components/native';
+import {LocationContext} from '~/Context';
 
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
@@ -23,11 +24,12 @@ font-size: 20px;
 font-family : BMHANNAPro
 color: black
 `;
+
 const MenuIcons = ({data}: any) => {
   const Navi = useNavigation();
   return (
     <MenuContainer>
-      <MenuIcon onPress={() => Navi.navigate('StoreList')}>
+      <MenuIcon onPress={() => Navi.navigate('StoreList', {kind: data.name})}>
         <FoodIcon source={data.uri} />
         <IconText>{data.name}</IconText>
       </MenuIcon>

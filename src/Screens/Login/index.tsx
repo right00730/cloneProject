@@ -11,7 +11,10 @@ import {StoreList} from '~/Screens/Main/StoreList';
 const Stack = createStackNavigator();
 const LoginNavi = () => {
   return (
-    <Stack.Navigator screenOptions={{headerTitleStyle: {alignSelf: 'center'}}}>
+    <Stack.Navigator
+      screenOptions={{
+        headerTitleStyle: {position: 'absolute', right: '50%', marginTop: -15},
+      }}>
       <Stack.Screen
         name="Login"
         component={Login}
@@ -55,19 +58,5 @@ const MYPAGE = () => {
     </Stack.Navigator>
   );
 };
-const Store = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="StoreList"
-        component={StoreList}
-        options={{
-          headerTitle: '마이페이지',
-          headerTitleStyle: {alignSelf: 'center'},
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
 
-export {LoginNavi, MYPAGE, Store};
+export {LoginNavi, MYPAGE};

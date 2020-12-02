@@ -24,7 +24,6 @@ flex-wrap : wrap
 margin: 0px 18px;
 `;
 const Main = () => {
-  console.log('Main!!!!!!!!!');
   useEffect(() => {
     SplashScreen.hide();
   }, []);

@@ -46,7 +46,6 @@ interface JSON {
 }
 const LocationList = ({route, navigation}: Props) => {
   const [data, setData] = useState<Array<{}>>();
-  const {isLoading, setIsLoading} = useContext(LocationContext);
   const [loading, setLoading] = useState(false);
 
   const findAddr = () => {

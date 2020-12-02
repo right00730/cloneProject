@@ -64,7 +64,7 @@ const ListItem = ({addr, navigation, borderN}: addrPorps) => {
   }
   const getXYbyLoadAddr = async () => {
     const tempAddr = addr.building;
-    const url = `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${tempAddr}&coordinate=127.1054328,37.3595963`;
+    const url = `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${tempAddr}&coordinate=127.0211838,37.511367`;
     await axios
       .get(url, {
         headers: {
