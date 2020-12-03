@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import Styled from 'styled-components/native';
-import {SafeAreaView, View} from 'react-native';
+import {Alert, SafeAreaView, View} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RoadName, WidthSize} from '~/Components/Component/SearchButton';
 import axios from 'axios';
@@ -55,11 +55,14 @@ const ListItem = ({addr, navigation, borderN}: addrPorps) => {
       .then((data) => {
         coords = [adrs.latitude, adrs.longitude];
 
-        navigation?.navigate('LocationDetail', {
-          lat: adrs.latitude,
-          lon: adrs.longitude,
-        });
+        adrs.latitude
+          ? navigation?.navigate('LocationDetail', {
+              lat: adrs.latitude,
+              lon: adrs.longitude,
+            })
+          : Alert.alert('입력된 주소를 찾을 수 없습니다.');
       })
+
       .catch((err) => console.log('getAddr', err));
   }
   const getXYbyLoadAddr = async () => {
@@ -75,6 +78,7 @@ const ListItem = ({addr, navigation, borderN}: addrPorps) => {
       })
       .then((response) => response.data)
       .then((data) => {
+        console.log('teststestse>>', data);
         insertData({
           jibunAddress: data.addresses[0].jibunAddress,
           roadAddress: data.addresses[0].roadAddress,
@@ -82,7 +86,9 @@ const ListItem = ({addr, navigation, borderN}: addrPorps) => {
           latitude: data.addresses[0].y,
         });
       })
-      .catch((error) => console.log('getXYbyLoadAddr errror>', error));
+      .catch(() => {
+        console.log('getXYbyLoadAddr  error');
+      });
 
     return;
   };

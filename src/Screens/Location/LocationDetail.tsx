@@ -129,6 +129,7 @@ const LocationDetail = ({route, navigation}: Props) => {
   //마커 움직였을 때 실행
   const [move, setMove] = useState({
     MoveTop: windowHeight / 2 - 30,
+    BottomTop: windowHeight / 2 - 20,
     MoveOpacity: 1,
   });
   //상세주소 입력할 때 실행
@@ -145,11 +146,15 @@ const LocationDetail = ({route, navigation}: Props) => {
             latitude: parseFloat(route.params.lat),
           }}
           onTouch={() => {
-            setMove({MoveTop: windowHeight / 2 - 35, MoveOpacity: 0.7});
+            setMove({
+              ...move,
+              MoveTop: windowHeight / 2 - 50,
+              MoveOpacity: 0.7,
+            });
           }}
           onCameraChange={(e) => {
             changed(e);
-            setMove({MoveTop: windowHeight / 2 - 35, MoveOpacity: 1});
+            setMove({...move, MoveTop: windowHeight / 2 - 35, MoveOpacity: 1});
           }}></NaverMapView>
         <Icon
           name="pizza-outline"
@@ -158,7 +163,14 @@ const LocationDetail = ({route, navigation}: Props) => {
           style={[
             style.centermarker,
             {top: move.MoveTop, opacity: move.MoveOpacity},
-          ]}></Icon>
+          ]}
+        />
+        <Icon
+          name="md-locate-outline"
+          size={markerSize}
+          color={'rgb(237,28,36)'}
+          style={[style.bottommarker, {top: move.BottomTop}]}
+        />
       </View>
       <TextContainer>
         <MainAddr>
@@ -212,6 +224,10 @@ const style = StyleSheet.create({
     position: 'absolute',
     right: windowWidth / 2 - markerSize / 2,
   },
+  bottommarker: {
+    position: 'absolute',
+    right: windowWidth / 2 - markerSize / 2,
+  },
 });
 const getAddrbyXY = async (x: number, y: number) => {
   const url = `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${x},${y}&sourcecrs=epsg:4326&orders=roadaddr,addr&output=json`;
@@ -226,21 +242,25 @@ const getAddrbyXY = async (x: number, y: number) => {
     .then((response) => response.data)
     .then((data) => {
       let temp = {};
-      if (data.results[0].land.name && data.results[0].land.name !== 'addr') {
-        temp = {
-          roadAddress: `${data.results[0].land.name} ${data.results[0].land.number1}`,
-          jibunAddress: data.results[0].land.addition0.value
-            ? data.results[0].land.addition0.value
-            : `${data.results[0].region.area2.name}${data.results[0].region.area3.name}`,
-        };
-      } else if (data.results[0].region.area1) {
-        temp = {
-          jibunAddress:
-            ` ${data.results[0].region.area2.name} ${data.results[0].region.area3.name}` +
-            `${data.results[0].land.number1} ${data.results[0].land.number2}`,
-        };
-      } else if (data.results[0].land.addition0.value) {
-        temp = {jibunAddress: data.results[0].land.addition0.value};
+      if (data.results[0].land) {
+        if (data.results[0].land.name && data.results[0].land.name !== 'addr') {
+          temp = {
+            roadAddress: `${data.results[0].land.name} ${data.results[0].land.number1}`,
+            jibunAddress: data.results[0].land.addition0.value
+              ? data.results[0].land.addition0.value
+              : `${data.results[0].region.area2.name}${data.results[0].region.area3.name}`,
+          };
+        } else if (data.results[0].region.area1) {
+          temp = {
+            jibunAddress:
+              ` ${data.results[0].region.area2.name} ${data.results[0].region.area3.name}` +
+              `${data.results[0].land.number1} ${data.results[0].land.number2}`,
+          };
+        } else if (data.results[0].land.addition0.value) {
+          temp = {jibunAddress: data.results[0].land.addition0.value};
+        } else {
+          temp = {roadAddress: '주소를 찾을 수 없습니다.', jibunAddress: ''};
+        }
       } else {
         temp = {roadAddress: '주소를 찾을 수 없습니다.', jibunAddress: ''};
       }
