@@ -2,7 +2,7 @@ import React, {useEffect, useContext} from 'react';
 import {Dimensions, View} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Styled from 'styled-components/native';
-import {Carousel} from './Carousel';
+import Carousel from './Carousel';
 import {MenuIcons} from './MenuIcons';
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 //github.com/GeekyAnts/NativeBase/issues/2947 >>스크롤뷰 에러 해결하기
