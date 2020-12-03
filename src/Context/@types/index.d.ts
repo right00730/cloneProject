@@ -11,7 +11,7 @@ interface IUserContext {
   isLoading: boolean | undefined;
   userInfo: IUserInfo;
   getUserInfo: () => void;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string) => boolean;
   logout: () => void;
   setIsLoading: any;
 }

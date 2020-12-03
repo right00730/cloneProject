@@ -1,5 +1,5 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Styled from 'styled-components/native';
@@ -15,7 +15,6 @@ import {UserContext} from '~/Context';
 import IsLoading from '../isLoading';
 import {baeminColor} from '~/Components/Styles/Colors';
 const Container = Styled.View`
-border : solid 1px black;
 flex:1 
 background-color : white;
 `;
@@ -30,17 +29,16 @@ width: 90%;
 justify-content : center;
 align-content:center;
 text-align:center;
-padding : 30px;
-margin: 10px;
+padding : 40px;
 `;
 const ButtontContainer = Styled.View`
-margin:50px;
+margin:30px;
 `;
 const ButtontC = Styled.Button`
 `;
 const IdInput = Styled.TextInput`
-border-bottom-color: black;
-border-bottom-width: 1px;
+border-bottom-color: gray;
+border-bottom-width: 0.5px;
 height: ${WidthSize(50)}px
 font-size: ${WidthSize(20)}px;
 width : ${width / 1.3}px
@@ -69,18 +67,39 @@ width: 50%;
 const Login = ({navigation}: Props) => {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
+  const [failMSG, setFailMSG] = useState(true);
+
+  useEffect(() => {
+    setFailMSG(false);
+  }, []);
 
   const {login, userInfo, isLoading, setIsLoading} = useContext(UserContext);
   const onPressBtn = async () => {
+    console.log(failMSG);
     setIsLoading(true);
-    await login(email, pw);
-    setEmail(userInfo.email);
-  };
+    const result = await login(email, pw);
+    if (result == false) {
+      console.log(result);
+      setFailMSG(true);
+    }
 
-  if (isLoading) return <IsLoading />;
+    console.log(failMSG);
+
+    setEmail('');
+    setPw('');
+  };
   return (
     <Container>
       <TextInputContainer>
+        <Text
+          style={{
+            fontSize: 20,
+            color: 'red',
+            marginTop: -20,
+            display: failMSG ? 'flex' : 'none',
+          }}>
+          계정 정보가 일치하지 않습니다
+        </Text>
         <IdInput
           onChangeText={(text: string) => {
             setEmail(text);

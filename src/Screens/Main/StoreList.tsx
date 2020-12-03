@@ -44,6 +44,8 @@ interface Props {
     address: string;
     rating: string;
     picture: string;
+    time: undefined;
+    amount: undefined;
   };
 }
 interface routeProps {
@@ -77,14 +79,19 @@ const StoreList = ({route, navigation}: routeProps) => {
       address: undefined;
       rating: undefined;
       picture: undefined;
+      time: undefined;
+      amount: undefined;
     }> = [];
     if (data.length) {
+      console.log(data);
       data.map((item) => {
         temp.push({
           name: item.name,
           address: item.address,
           rating: item.rating,
           picture: item.picture,
+          time: item.time,
+          amount: item.amount,
         });
       });
       setData(temp);
@@ -113,7 +120,7 @@ const StoreComponent = ({item}: Props) => {
         <StoreName>{item.name}</StoreName>
         <StoreAddr>
           ⭐{item.rating} /{item.address}
-          {'\n'}⏲ 14:30 - 01:30 / 만원-2만원
+          {'\n'}⏲ {item.time} / {item.amount}
         </StoreAddr>
       </InfoContainer>
     </StoreContainer>

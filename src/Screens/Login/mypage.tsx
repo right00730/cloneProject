@@ -22,8 +22,12 @@ background-color:${baeminColor}
 text-align:center;
 width : 50%;
 align-items:center`;
+type myNavigation = StackNavigationProp<NavigationParamList>;
+interface Props {
+  navigation: myNavigation;
+}
 
-const Mypage = () => {
+const Mypage = ({navigation}: Props) => {
   const {logout, userInfo} = useContext(UserContext);
   const loginInfo = userInfo?.email;
   const nickName = userInfo?.nickName;
