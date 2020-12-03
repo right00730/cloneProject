@@ -39,7 +39,7 @@ const Main = () => {
         uri: require('~/Assets/Images/food/japanese.png'),
       },
       {
-        name: '피자',
+        name: '양식',
         uri: require('~/Assets/Images/food/pizza.png'),
       },
       {

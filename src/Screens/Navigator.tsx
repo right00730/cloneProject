@@ -1,11 +1,10 @@
 import React, {useContext, useEffect} from 'react';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {createStackNavigator, HeaderTitle} from '@react-navigation/stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {UserContext, LocationContext} from '~/Context/';
 import Main from '~/Screens/Main';
-import FadeInView from '~/Screens/Main/FadeInView';
 import {StoreList} from '~/Screens/Main/StoreList';
 
 import {
@@ -19,9 +18,7 @@ import {baeminColor} from '~/Components/Styles/Colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Text} from 'react-native';
 import {LoginNavi, MYPAGE} from './Login';
-import Mypage from './Login/mypage';
 import IsLoading from './isLoading';
-import {Header} from 'react-native/Libraries/NewAppScreen';
 const Stack = createStackNavigator();
 const BottomT = createBottomTabNavigator();
 const Top = createMaterialTopTabNavigator();
@@ -75,6 +72,7 @@ const Bottom = () => {
   return (
     <BottomT.Navigator
       initialRouteName="home"
+      backBehavior={'initialRoute'}
       tabBarOptions={{
         keyboardHidesTabBar: true,
         activeTintColor: baeminColor,
@@ -135,6 +133,7 @@ const Bottom = () => {
           name="Mypage"
           component={MYPAGE}
           options={{
+            unmountOnBlur: true,
             tabBarLabel: '마이페이지',
             tabBarIcon: ({size, color}) => (
               <Icon name="md-happy-outline" size={size} color={color} />
@@ -230,8 +229,7 @@ const MainStack = () => {
 };
 
 export default () => {
-  const {addrInfo, isLoading, getAddr} = useContext(LocationContext);
-  console.log('>>>>>>>', addrInfo);
+  const {addrInfo} = useContext(LocationContext);
   return (
     <NavigationContainer>
       <Stack.Navigator headerMode="none">

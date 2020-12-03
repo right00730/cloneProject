@@ -4,6 +4,7 @@ import {Alert, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Styled from 'styled-components/native';
 import {Button} from '~/Components/Component/Button';
+import Modal from 'react-native-modal';
 import {
   HeightSize,
   WidthSize,
@@ -34,6 +35,8 @@ margin: 10px;
 `;
 const ButtontContainer = Styled.View`
 margin:50px;
+`;
+const ButtontC = Styled.Button`
 `;
 const IdInput = Styled.TextInput`
 border-bottom-color: black;
@@ -71,11 +74,9 @@ const Login = ({navigation}: Props) => {
   const onPressBtn = async () => {
     setIsLoading(true);
     await login(email, pw);
+    setEmail(userInfo.email);
   };
 
-  const onInputEmail = (text: string) => {
-    setEmail(text);
-  };
   if (isLoading) return <IsLoading />;
   return (
     <Container>

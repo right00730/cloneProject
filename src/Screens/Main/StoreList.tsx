@@ -1,11 +1,12 @@
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import {Alert, Text, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {LocationContext} from '~/Context';
 import Styled from 'styled-components/native';
 import {HeightSize, WidthSize} from '~/Components/Component/SearchButton';
 import {RouteProp} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 const Cotainer = Styled.View`
 flex: 1;
@@ -23,16 +24,16 @@ padding: 5px;
 
 `;
 const StoreName = Styled.Text`
-font-size: 22px
+font-size: 20px
 font-weight: bold;
 ; `;
 const StoreAddr = Styled(StoreName)`
 font-size: 17px; `;
 
 const Picture = Styled.Image`
-height: ${HeightSize(100)}px
-width: ${WidthSize(60)}px
-border-radius : 9px;
+height: ${HeightSize(90)}px
+width: ${WidthSize(50)}px
+border-radius : 22px;
 `;
 const InfoContainer = Styled.View`
 padding: 10px;
@@ -47,10 +48,13 @@ interface Props {
 }
 interface routeProps {
   route: storeRoute;
+  navigation: storeNavigation;
 }
 
 type storeRoute = RouteProp<NavigationParamList, 'StoreList'>;
-const StoreList = ({route}: routeProps) => {
+type storeNavigation = StackNavigationProp<NavigationParamList>;
+
+const StoreList = ({route, navigation}: routeProps) => {
   let kind = route.params.kind;
   const {coords} = useContext(LocationContext);
   const [data, setData] = useState<Array<{}>>();
@@ -61,6 +65,10 @@ const StoreList = ({route}: routeProps) => {
       .then((json) => json.data)
       .then((data) => {
         pushStore(data);
+      })
+      .catch(() => {
+        Alert.alert('등록된 가게가 없습니다.');
+        navigation.popToTop();
       });
   };
   const pushStore = (data: Array<any>) => {
@@ -105,6 +113,7 @@ const StoreComponent = ({item}: Props) => {
         <StoreName>{item.name}</StoreName>
         <StoreAddr>
           ⭐{item.rating} /{item.address}
+          {'\n'}⏲ 14:30 - 01:30 / 만원-2만원
         </StoreAddr>
       </InfoContainer>
     </StoreContainer>

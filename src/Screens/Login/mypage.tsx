@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Alert, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Button} from '~/Components/Component/Button';
@@ -7,6 +7,7 @@ import {baeminColor} from '~/Components/Styles/Colors';
 
 import {UserContext} from '~/Context';
 import {StackNavigationProp} from '@react-navigation/stack';
+import axios from 'axios';
 const Container = Styled.View`
 flex:1;
 `;
@@ -21,17 +22,39 @@ background-color:${baeminColor}
 text-align:center;
 width : 50%;
 align-items:center`;
-type MainLocation = StackNavigationProp<NavigationParamList>;
-interface Props {
-  navigation: MainLocation;
-}
-const Mypage = ({navigation}: Props) => {
+
+const Mypage = () => {
   const {logout, userInfo} = useContext(UserContext);
   const loginInfo = userInfo?.email;
   const nickName = userInfo?.nickName;
+  useEffect(() => {
+    tokenCheck(userInfo.token);
+  }, [userInfo.token]);
   const onLogout = async () => {
     await logout();
   };
+
+  const tokenCheck = async (token: string) => {
+    const url = 'http://192.168.0.37:8080/api/jwt/expiredcheck';
+    await axios
+      .get(url, {
+        headers: {AUTHORIZATION: `Bearer ${token}`},
+      })
+      .then((json) => json.data)
+      .then((data) => {
+        if (JSON.stringify(data) == 'false') {
+          console.log('token aceess');
+        } else {
+          logout();
+          Alert.alert('로그인이 만료되었습니다.');
+        }
+      })
+      .catch(function (error) {
+        logout();
+        Alert.alert('로그인이 만료되었습니다.');
+      });
+  };
+
   return (
     <Container>
       <TextBox style={{padding: 100, paddingLeft: 10}}>로그인 정보 </TextBox>

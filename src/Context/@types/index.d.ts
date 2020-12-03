@@ -1,6 +1,7 @@
 interface IUserInfo {
   email: string | undefined;
   nickName?: string | undefined;
+  token?: string;
 }
 interface ILocation {
   mainAddr: string;

@@ -21,6 +21,7 @@ const UserContextProvider = ({children}: Props) => {
   const [userInfo, setUserInfo] = useState<IUserInfo>({
     email: undefined,
     nickName: undefined,
+    token: undefined,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const login = async (emaild: string, passwordd: string) => {
@@ -32,6 +33,7 @@ const UserContextProvider = ({children}: Props) => {
       })
       .then((json) => json.data)
       .then((data) => {
+        console.log(data.tokens.accessToken);
         AsyncStorage.setItem(
           'loginToken',
           JSON.stringify({
@@ -41,6 +43,7 @@ const UserContextProvider = ({children}: Props) => {
           }),
         ).then(() => {
           setUserInfo({
+            token: data.tokens.accessToken,
             email: data.email,
             nickName: data.name,
           });
@@ -52,7 +55,6 @@ const UserContextProvider = ({children}: Props) => {
       })
       .catch((error) => {
         console.log('fail!!! >>', error);
-        Alert.alert('로그인 실패');
 
         setIsLoading(false);
       });
@@ -64,6 +66,7 @@ const UserContextProvider = ({children}: Props) => {
         let Info = data ? JSON.parse(data) : undefined;
         if (data && Info.token) {
           setUserInfo({
+            token: Info.token,
             email: Info.email,
             nickName: Info.nickName,
           });
@@ -74,10 +77,10 @@ const UserContextProvider = ({children}: Props) => {
   };
   const logout = () => {
     AsyncStorage.removeItem('loginToken')
-      .then(() => setUserInfo({email: '', nickName: ''}))
+      .then(() => setUserInfo({email: '', nickName: '', token: ''}))
       .catch((error) => {
         console.log('logout fail');
-        setUserInfo({email: '', nickName: ''});
+        setUserInfo({email: '', nickName: '', token: ''});
       });
   };
   useEffect(() => {

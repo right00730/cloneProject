@@ -1,4 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
+import {HeaderTitle} from '@react-navigation/stack';
 import React, {useContext} from 'react';
 import {Dimensions, View} from 'react-native';
 import Styled from 'styled-components/native';

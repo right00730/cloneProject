@@ -1,12 +1,9 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import {createStackNavigator, HeaderTitle} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import React from 'react';
 import Login from './login';
 import {JoinTerm, JoinConfirm, JoinDataInput} from '~/Screens/Join';
 import Mypage from '~/Screens/Login/mypage';
-import {color} from 'react-native-reanimated';
-import {StoreList} from '~/Screens/Main/StoreList';
 
 const Stack = createStackNavigator();
 const LoginNavi = () => {
@@ -28,18 +25,25 @@ const LoginNavi = () => {
         name="JoinTerm"
         component={JoinTerm}
         options={{
+          ...TransitionPresets.SlideFromRightIOS,
           headerTitle: '회원가입',
         }}
       />
       <Stack.Screen
         name="JoinConfirm"
         component={JoinConfirm}
-        options={{headerTitle: '회원가입'}}
+        options={{
+          ...TransitionPresets.SlideFromRightIOS,
+          headerTitle: '회원가입',
+        }}
       />
       <Stack.Screen
         name="JoinDataInput"
         component={JoinDataInput}
-        options={{headerTitle: '회원가입'}}
+        options={{
+          ...TransitionPresets.SlideFromRightIOS,
+          headerTitle: '회원가입',
+        }}
       />
     </Stack.Navigator>
   );
