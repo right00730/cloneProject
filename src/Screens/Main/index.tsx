@@ -21,7 +21,7 @@ const BackgroundImg = Styled.ImageBackground`
 const FlatLists = Styled.View`
 flex-direction :row
 flex-wrap : wrap
-margin: 0px 18px;
+margin: 20px 18px;
 `;
 const Main = () => {
   useEffect(() => {

@@ -2,6 +2,7 @@ import React, {useState, createContext, useEffect} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import {Alert} from 'react-native';
+import {pow} from 'react-native-reanimated';
 
 const defaultContext: IUserContext = {
   isLoading: false,
@@ -25,7 +26,9 @@ const UserContextProvider = ({children}: Props) => {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const login = async (emaild: string, passwordd: string) => {
-    const url = 'http://192.168.0.37:8080/api/member/login';
+    console.log(emaild, passwordd);
+
+    const url = 'http://192.168.0.250:8080/api/member/login';
     await axios
       .post(url, {
         email: emaild,

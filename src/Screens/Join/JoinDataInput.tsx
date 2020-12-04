@@ -1,25 +1,23 @@
 import React, {useState} from 'react';
 import Styled from 'styled-components/native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {baeminColor} from '~/Components/Styles/Colors';
 import axios from 'axios';
-import {Button} from '~/Components/Component/Button';
 import {Alert, Text} from 'react-native';
-import {color} from 'react-native-reanimated';
-import {NavigationHelpersContext, RouteProp} from '@react-navigation/native';
+import {CheckIcon} from '~/Components/Component/Icons';
+import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-const Container = Styled.View`
+import {baeminColor} from '~/Components/Styles/Colors';
+const Container = Styled.ScrollView`
 background-color:white;
 flex:1
-align-items:center;
 
 `;
 const InputContainer = Styled.View`
 padding: 10px;
 width: 90%;
+justify-content:center
 `;
 const InnerInputContainer = Styled.View`
-padding: 20px;
+padding:0px  10px;
 width: 100%;
 flex-direction:row
 align-items:center
@@ -28,6 +26,7 @@ align-content:space-between
 `;
 const Title = Styled.Text`
 font-size: 20px;
+padding: 10px;
 
 `;
 
@@ -97,7 +96,7 @@ const JoinDataInput = ({navigation, route}: Props) => {
       Alert.alert('이메일 형식이 유효하지 않습니다.');
     } else {
       const Inputemail = data.email;
-      const url = `http://192.168.0.37:8080/api/member/${Inputemail}`;
+      const url = `http://192.168.0.250:8080/api/member/${Inputemail}`;
       await axios
         .get(url)
         .then((json) => json.data)
@@ -120,6 +119,10 @@ const JoinDataInput = ({navigation, route}: Props) => {
     setChecked({...checked, pwCheck: flag});
   };
   const onBirthCheck = (text: string) => {
+    text = text
+      .replace(/[^0-9]/g, '')
+      .replace(/(^[0-9]{4})([0-9]+)([0-9]{2})/, '$1.$2.$3');
+    setData({...data, birth: text});
     const flag = text.length > 7 ? true : false;
     setChecked({...checked, birthCheck: flag});
   };
@@ -130,7 +133,7 @@ const JoinDataInput = ({navigation, route}: Props) => {
   };
   const onJoinFinish = async () => {
     console.log(data.email, data.nickName, data.pw, data.memberPhone);
-    const url = 'http://192.168.0.37:8080/api/member/join';
+    const url = 'http://192.168.0.250:8080/api/member/join';
     await axios
       .post(url, {
         email: data.email,
@@ -194,24 +197,22 @@ const JoinDataInput = ({navigation, route}: Props) => {
       <InputContainer>
         <Title>생년월일</Title>
         <InnerInputContainer>
-          <DataInput onChangeText={onBirthCheck} placeholder="예) 2000.01.01" />
+          <DataInput
+            value={data.birth}
+            onChangeText={onBirthCheck}
+            placeholder="예) 2000.01.01"
+          />
           <CheckIcon checkedValue={checked.birthCheck} />
         </InnerInputContainer>
       </InputContainer>
-      <ButtonContainer disabled={!totalCheck} onPress={onJoinFinish}>
+      <ButtonContainer
+        style={{backgroundColor: totalCheck ? baeminColor : 'white'}}
+        disabled={!totalCheck}
+        onPress={onJoinFinish}>
         <Title style={{color: totalCheck ? 'black' : 'gray'}}>입력 완료</Title>
       </ButtonContainer>
     </Container>
   );
 };
 
-const CheckIcon = ({checkedValue}: IconProps) => {
-  return (
-    <Icon
-      name="md-checkmark-circle-sharp"
-      color={checkedValue ? baeminColor : 'gray'}
-      size={20}
-    />
-  );
-};
 export default JoinDataInput;

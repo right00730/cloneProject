@@ -28,7 +28,10 @@ font-size: 20px
 font-weight: bold;
 ; `;
 const StoreAddr = Styled(StoreName)`
-font-size: 17px; `;
+font-size: 17px;
+font-weight: normal;
+
+`;
 
 const Picture = Styled.Image`
 height: ${HeightSize(90)}px
@@ -61,7 +64,7 @@ const StoreList = ({route, navigation}: routeProps) => {
   const {coords} = useContext(LocationContext);
   const [data, setData] = useState<Array<{}>>();
   const getStoreInfo = async () => {
-    const url = `http://192.168.0.37:8080/api/mango/foodlist?rangearray=rating&kind=${kind}&password=123&lat=37.511367&lot=127.0211838&myfield=200`;
+    const url = `http://192.168.0.250:8080/api/mango/foodlist?rangearray=rating&kind=${kind}&password=123&lat=37.511367&lot=127.0211838&myfield=200`;
     axios
       .get(url, {})
       .then((json) => json.data)
@@ -119,8 +122,8 @@ const StoreComponent = ({item}: Props) => {
       <InfoContainer>
         <StoreName>{item.name}</StoreName>
         <StoreAddr>
-          ⭐{item.rating} /{item.address}
-          {'\n'}⏲ {item.time} / {item.amount}
+          ⭐ {item.rating} | {item.address}
+          {'\n'}⏱ {item.time} / {item.amount}
         </StoreAddr>
       </InfoContainer>
     </StoreContainer>

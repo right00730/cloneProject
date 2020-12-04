@@ -31,7 +31,7 @@ const Carousel = ({height, width}) => {
     <View style={{flex: 1}}>
       <SwiperFlatList
         autoplay
-        autoplayDelay={3}
+        autoplayDelay={1}
         autoplayLoop
         index={2}
         showPagination>

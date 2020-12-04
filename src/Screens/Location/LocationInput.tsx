@@ -3,10 +3,8 @@ import Styled from 'styled-components/native';
 import Geolocation from 'react-native-geolocation-service';
 import {Alert, PermissionsAndroid} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {SearchButton} from '~/Components/Component/SearchButton';
+import {HeightSize, SearchButton} from '~/Components/Component/SearchButton';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {LocationContext} from '~/Context';
-
 const Container = Styled.View`
 padding: 25px 10px;
 flex:1;
@@ -15,8 +13,8 @@ background-color: white;
 const InputContainer = Styled.View`
 flex-direction :row;
 width: 100%;
-justify-content : space-between;
-height: 47px;
+justify-content : center;
+height: ${HeightSize(90)}px
 `;
 
 const MessageInput = Styled.TextInput`
@@ -32,6 +30,7 @@ border : solid 1px lightgray;
 flex-direction :row;
  justify-content: center ;
 padding: 10px 15px;
+height: ${HeightSize(90)}px
 
  `;
 
@@ -57,7 +56,9 @@ const LocationInput = ({navigation}: Props) => {
     <Container>
       <MainMessage>배달 받으실{'\n'}주소를 입력하세요 </MainMessage>
       <InputContainer>
-        <MessageInput onChangeText={(text) => setMessage(text)}></MessageInput>
+        <MessageInput
+          placeholder="ex) 배민구 배민로7길 "
+          onChangeText={(text) => setMessage(text)}></MessageInput>
         <SearchButton
           onPress={() => {
             message !== ''
@@ -90,8 +91,8 @@ const getXY = ({navigation}: Props) => {
       if (result === PermissionsAndroid.RESULTS.GRANTED) {
         Geolocation.getCurrentPosition(
           (position) => {
-            Alert.alert('위치정보 제공에  동의하셨습니다');
             const {longitude, latitude} = position.coords;
+            console.log(longitude);
             longitude
               ? navigation.navigate('LocationDetail', {
                   lon: longitude,

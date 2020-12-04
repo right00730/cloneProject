@@ -6,6 +6,7 @@ import {Button} from '~/Components/Component/Button';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {baeminColor} from '~/Components/Styles/Colors';
 import {ScaleFromCenterAndroid} from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/TransitionPresets';
+import {CheckIcon} from '~/Components/Component/Icons';
 
 const Container = Styled.View`
 background-color:white
@@ -28,7 +29,6 @@ const NumberInput = Styled.TextInput`
 border-bottom-width :1px
 border-bottom-color :black
 width: 100%;
-
 `;
 
 const Phone = Styled.Text`
@@ -42,7 +42,6 @@ align-items:center;
 height: 50px;
 justify-content:center;
 align-self: center
-
 `;
 
 interface Props {
@@ -55,9 +54,14 @@ const JoinConfirm = ({navigation}: Props) => {
     confirmcheck: false,
   });
   const [phoneNum, setNumber] = useState('');
+  const [confirmNum, setConfirmNum] = useState('');
 
   const onNumberCheck = (text: string) => {
-    if (text.length >= 11) {
+    text = text
+      .replace(/[^0-9]/g, '')
+      .replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/, '$1-$2-$3')
+      .replace('--', '-');
+    if (text.length >= 13) {
       setChecked({...checked, numcheck: true});
       setNumber(text);
     } else {
@@ -70,10 +74,13 @@ const JoinConfirm = ({navigation}: Props) => {
     setChecked({...checked, buttonCheck: true});
   };
   const onCofirmCheck = (text: string) => {
+    text = text.replace(/[^0-9]/g, '');
     if (text.length >= 4) {
       setChecked({...checked, confirmcheck: true});
+      setConfirmNum(text);
     } else {
       setChecked({...checked, confirmcheck: false});
+      setConfirmNum(text);
     }
   };
 
@@ -87,10 +94,7 @@ const JoinConfirm = ({navigation}: Props) => {
             onChangeText={onNumberCheck}
             placeholder="010-0000-0000"
           />
-          <Icon
-            name="checkmark-sharp"
-            color={checked.numcheck ? baeminColor : 'gray'}
-            size={20}></Icon>
+          <CheckIcon checkedValue={checked.numcheck} />
         </InnerInputContainer>
       </InputContainer>
       <ButtonContainer
@@ -109,11 +113,12 @@ const JoinConfirm = ({navigation}: Props) => {
           <Phone>인증 번호</Phone>
 
           <InnerInputContainer>
-            <NumberInput onChangeText={onCofirmCheck} placeholder="0000" />
-            <Icon
-              name="checkmark-sharp"
-              color={checked.confirmcheck ? baeminColor : 'gray'}
-              size={20}></Icon>
+            <NumberInput
+              value={confirmNum}
+              onChangeText={onCofirmCheck}
+              placeholder="0000"
+            />
+            <CheckIcon checkedValue={checked.confirmcheck} />
           </InnerInputContainer>
         </InputContainer>
         <ButtonContainer

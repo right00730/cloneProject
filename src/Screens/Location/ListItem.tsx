@@ -53,14 +53,16 @@ const ListItem = ({addr, navigation, borderN}: addrPorps) => {
     //비동기 처리 다시
     getXYbyLoadAddr()
       .then((data) => {
+        console.log('data>>>>>>>>>>>>>>>>>>>>>>>>', data);
         coords = [adrs.latitude, adrs.longitude];
-
-        adrs.latitude
-          ? navigation?.navigate('LocationDetail', {
-              lat: adrs.latitude,
-              lon: adrs.longitude,
-            })
-          : Alert.alert('입력된 주소를 찾을 수 없습니다.');
+        if (adrs.latitude) {
+          navigation?.navigate('LocationDetail', {
+            lat: adrs.latitude,
+            lon: adrs.longitude,
+          });
+        } else if (adrs.latitude === 0) {
+          Alert.alert('입력된 주소를 찾을 수 없습니다.');
+        }
       })
 
       .catch((err) => console.log('getAddr', err));
